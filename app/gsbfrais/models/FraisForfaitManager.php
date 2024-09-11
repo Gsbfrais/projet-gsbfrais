@@ -1,5 +1,8 @@
 <?php
+
 namespace Gsbfrais\models;
+
+use Gsbfrais\Autoloader;
 
 class FraisForfaitManager extends Model
 {
@@ -7,15 +10,15 @@ class FraisForfaitManager extends Model
     {
         parent::__construct();
     }
-    
+
     /**
      * Retourne tous les frais forfaitisés d'un visiteur donné pour un mois donné
      * @param int $idVisiteur int identifiant du visiteur médical
      * @param int $mois int mois sous la forme aaaamm
-     * 
+     *
      * @return array tableau d'objets contenant les frais forfaitisés répondant aux critères
      */
-    public function getLesFraisForfait(int $idVisiteur, int $mois):array
+    public function getLesFraisForfait(int $idVisiteur, int $mois): array
     {
         $sql = "select code_categorie, categoriefraisforfait.libelle, fraisforfait.quantite 
                 from fraisforfait 
@@ -38,10 +41,10 @@ class FraisForfaitManager extends Model
      * Retourne tous les frais forfaitisés des visiteurs d'une région pour un mois donnés
      * @param int $mois int mois sous la forme aaaamm
      * @param int $idRegion int identifiant de la région
-     * 
+     *
      * @return array tableau d'objets contenant les frais forfaitisés répondant aux critères
      */
-    public function getLesFraisForfaitRegion(int $mois, int $idRegion):array
+    public function getLesFraisForfaitRegion(int $mois, int $idRegion): array
     {
         $sql = "select code_categorie, categoriefraisforfait.libelle, fraisforfait.quantite 
                 from fraisforfait 
@@ -66,10 +69,10 @@ class FraisForfaitManager extends Model
      * @param int $idVisiteur int identifiant du visiteur médical
      * @param int $mois int mois sous la forme aaaamm
      * @param int $codeCategorie int mois sous la forme aaaamm
-     * 
+     *
      * @return mixed le frais forfaitisé sous la forme d'un objet ou false si n'existe pas
      */
-    public function getFraisForfaitByKey(int $idVisiteur, int $mois, string $codeCategorie):mixed
+    public function getFraisForfaitByKey(int $idVisiteur, int $mois, string $codeCategorie): mixed
     {
         $sql = "select id_visiteur, code_categorie, categoriefraisforfait.libelle, fraisforfait.quantite 
                 from fraisforfait 
@@ -90,16 +93,25 @@ class FraisForfaitManager extends Model
 
     /**
      * Ajoute un frais forfaitisé
-     * 
+     *
      * @param int $idVisiteur identifiant du visiteur médical concerné
      * @param int $mois int sous la forme aaaamm période concernée
-     * @param int $codeCategorie code catégori du frais forfaitisé
+     * @param string $codeCategorie code catégori du frais forfaitisé
      * @param int $quantite quantite de frais forfaitisé
-     * 
+     *
      * @return void
+     * @throws \Exception
      */
-    public function ajouteFraisForfait(int $idVisiteur, int $mois, string $codeCategorie, int $quantite) {
-        $sql = "insert into fraisforfait(id_visiteur, mois, code_categorie, quantite) 
+    public function ajouteFraisForfait(int $idVisiteur, int $mois, string $codeCategorie, int $quantite)
+    {
+        $nbJour = cal_days_in_month(CAL_GREGORIAN, intval(date('n')), intval(date('o')));
+
+        if ($quantite > $nbJour) {
+            http_response_code(500);
+            throw new \Exception('Le nombre de fiche de frais ne peut pas dépasser le nombre de jour du mois');
+        }
+
+        $sql = "insert into fraisforfait(id_visiteur, mois, code_categorie, quantite)
         values(:id_visiteur, :mois, :code_categorie, :quantite)";
         $stmt = $this->db->prepare($sql);
         $ret = $stmt->execute(array(
@@ -116,14 +128,14 @@ class FraisForfaitManager extends Model
 
     /**
      * Retourne la liste des catégories de frais forfaitisés non encore utilisées
-     * pour un visiteur et un mois donnés 
-     * 
+     * pour un visiteur et un mois donnés
+     *
      * @param int $idVisiteur identifiant du visiteur médical concerné
      * @param int $mois int sous la forme aaaamm période concernée
      * *
      * @return array tableau d'objets contenant les types de frais forfait
      */
-    public function getLesCategoriesDisponiblesPourFicheFrais(int $idVisiteur, int $mois):array
+    public function getLesCategoriesDisponiblesPourFicheFrais(int $idVisiteur, int $mois): array
     {
         $sql = "select code, libelle 
                 from categoriefraisforfait
@@ -151,11 +163,11 @@ class FraisForfaitManager extends Model
      *
      * @param int $idVisiteur id du visiteur concerné
      * @param int $mois concerné
-     *@param int $quantite quantite de frais forfaitisé
-     * 
+     * @param int $quantite quantite de frais forfaitisé
+     *
      * @return void
      */
-    public function supprimeFraisForfait(int $idVisiteur, int $mois, string $codeCategorie):void
+    public function supprimeFraisForfait(int $idVisiteur, int $mois, string $codeCategorie): void
     {
         $sql = "delete from fraisforfait 
                 where id_visiteur =:id_visiteur 
@@ -172,18 +184,18 @@ class FraisForfaitManager extends Model
             throw new \Exception('Problème requête supprimeFraisForfait (FraisHorsForfaitManager)');
         }
     }
-    
+
     /**
      * Modifie un frais forfaitisé
-     * 
+     *
      * @param int $idVisiteur identifiant du visiteur médical concerné
      * @param int $mois int sous la forme aaaamm période concernée
      * @param int $codeTypeFrais code du type de frais
      * @param int $quantite nouvelle quantite
-     * 
+     *
      * @return void
      */
-    public function modifieFraisForfait(int $idVisiteur, int $mois, string $codeTypeFrais, int $quantite):void
+    public function modifieFraisForfait(int $idVisiteur, int $mois, string $codeTypeFrais, int $quantite): void
     {
         $sql = "update fraisforfait set fraisforfait.quantite = $quantite
         where fraisforfait.id_visiteur = :id_visiteur 
@@ -199,5 +211,5 @@ class FraisForfaitManager extends Model
             throw new \Exception('Problème requête modifieFraisForfait (FraisForfaitManager)');
         }
     }
-    
+
 }

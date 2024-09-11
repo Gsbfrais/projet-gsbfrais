@@ -63,6 +63,13 @@ class FraisForfaitController extends Controller
     private function verifierQteFraisForfait($codeCategorie, $quantite): string
     {
         $errors = '';
+
+        $nbJour = cal_days_in_month(CAL_GREGORIAN, intval(date('n')), intval(date('o')));
+
+        if ($quantite > $nbJour) {
+            $errors .= "Vous ne pouvez pas rentrer une quantité supérieure au nombre de jour<br>";
+        }
+
         if (empty($codeCategorie) == true) {
             $errors .= "Vous devez renseigner le code catégorie<br>";
         }

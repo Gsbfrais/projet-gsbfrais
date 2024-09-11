@@ -1,6 +1,21 @@
 <?php
 
 /**
+ * Prend une date en params pour renvoyer le mois
+ *
+ * @param $date
+ * @return int Le mois
+ */
+function getMois($date): int
+{
+    @list($jour, $mois, $annee) = explode('/', $date);
+    if (strlen($mois) == 1) {
+        $mois = "0" . $mois;
+    }
+    return intval($mois);
+}
+
+/**
  * Vérifie si un visiteur est authentifié
  * 
  * @return bool true si un visiteur est authentifié, false sinon
