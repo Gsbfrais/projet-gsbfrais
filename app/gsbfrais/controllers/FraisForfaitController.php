@@ -1,4 +1,5 @@
 <?php
+
 namespace Gsbfrais\Controllers;
 
 use Gsbfrais\models\{FicheFraisManager, FraisForfaitManager};
@@ -10,14 +11,19 @@ class FraisForfaitController extends Controller
         parent::__construct();
     }
 
-    public function saisirFraisForfait():void
+    public function saisirFraisForfait(): void
     {
         $ficheFraisManager = new FicheFraisManager();
         $fraisForfaitManager = new FraisForfaitManager();
 
+        if ($_SESSION['profilUtil'] != "visiteur médical") {
+            http_response_code(403);
+            throw new \Exception("Vous n'êtes pas autorisé à accéder à cette ressource");
+        }
+
         // Création de la fiche de frais du mois si elle n'existe pas encore
-        if ($ficheFraisManager->estPremierFraisMois($_SESSION['idUtil'] , $this->mois)) {
-            $ficheFraisManager->ajouteFicheFrais($_SESSION['idUtil'] , $this->mois);
+        if ($ficheFraisManager->estPremierFraisMois($_SESSION['idUtil'], $this->mois)) {
+            $ficheFraisManager->ajouteFicheFrais($_SESSION['idUtil'], $this->mois);
         }
 
         $errorMessage = '';
@@ -34,14 +40,14 @@ class FraisForfaitController extends Controller
             // Mise à jour de la base de données si aucune erreur
             if (empty($errorMessage) == true) {
                 $fraisForfaitManager = new FraisForfaitManager();
-                $fraisForfaitManager->ajouteFraisForfait($_SESSION['idUtil'] , $this->mois, $codeCategorie, $quantite);
+                $fraisForfaitManager->ajouteFraisForfait($_SESSION['idUtil'], $this->mois, $codeCategorie, $quantite);
                 $codeCategorie = '';
                 $quantite = '';
             }
         }
 
-        $lesFraisForfait = $fraisForfaitManager->getLesFraisForfait($_SESSION['idUtil'] , $this->mois);
-        $lesCategories = $fraisForfaitManager->getLesCategoriesDisponiblesPourFicheFrais($_SESSION['idUtil'] , $this->mois);
+        $lesFraisForfait = $fraisForfaitManager->getLesFraisForfait($_SESSION['idUtil'], $this->mois);
+        $lesCategories = $fraisForfaitManager->getLesCategoriesDisponiblesPourFicheFrais($_SESSION['idUtil'], $this->mois);
 
         $this->render('fraisForfait/gestionFraisForfait', [
             'title' => 'Saisie frais forfaitisés',
@@ -54,7 +60,7 @@ class FraisForfaitController extends Controller
         ]);
     }
 
-    private function verifierQteFraisForfait($codeCategorie, $quantite):string
+    private function verifierQteFraisForfait($codeCategorie, $quantite): string
     {
         $errors = '';
         if (empty($codeCategorie) == true) {
@@ -65,9 +71,9 @@ class FraisForfaitController extends Controller
             $errors .= "La quantité doit être renseignée et numérique<br>";
         }
         return $errors;
-    } 
+    }
 
-    public function supprimerFraisForfait($codeCategorie):void
+    public function supprimerFraisForfait($codeCategorie): void
     {
         $fraisForfaitManager = new fraisForfaitManager();
 
@@ -82,7 +88,7 @@ class FraisForfaitController extends Controller
             throw new \Exception("Tentative de suppression d'un frais forfait par un utilisateur non habilité");
         }
         $fraisForfaitManager->supprimeFraisForfait($_SESSION['idUtil'], $this->mois, $codeCategorie);
-        $lesCategories = $fraisForfaitManager->getLesCategoriesDisponiblesPourFicheFrais($_SESSION['idUtil'] , $this->mois);
+        $lesCategories = $fraisForfaitManager->getLesCategoriesDisponiblesPourFicheFrais($_SESSION['idUtil'], $this->mois);
 
         // Récupère la liste des frais forfaitisés mise à jour pour affichage 
         $lesFraisForfait = $fraisForfaitManager->getLesFraisForfait($_SESSION['idUtil'], $this->mois);
