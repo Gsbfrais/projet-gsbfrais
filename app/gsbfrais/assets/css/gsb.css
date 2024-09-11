@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
+
+body {
+    padding-top: 60px;
+    font-family: 'Open Sans', sans-serif;
+    width: 100%;
+    overflow-x:hidden;
+}
+body.Accueil {
+    background-image: url("../images/bg-gsb.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+.navbar {
+    z-index: 100;
+}
+#connected-user {
+    position: fixed;
+    top: 0;
+    right:12px;
+    height: 58px;
+    z-index: 101;
+}
+
+
+#titre-accueil {
+    font-size: 3.5rem;
+    font-weight: 400;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+}
+h2 {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+}
+
+.caption {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+@media(min-width: 1200px) {
+    #titre-accueil {
+        margin-top:1.5rem;
+    }
+}
+
+@media(max-width: 1199.99px) {
+    #titre-accueil {
+        font-size: 2.5rem;
+    }
+}
+@media(max-width: 991.99px) {
+    #titre-accueil {
+        font-size: 2rem;
+    }
+    h1 {
+        margin-top: 1rem;
+        margin-bottom: 3rem;
+    }
+    #connected-user {
+        height: 40px;
+    }
+}
+@media(max-width: 768px) {
+    #titre-accueil {
+        font-size: 1.5rem;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+}

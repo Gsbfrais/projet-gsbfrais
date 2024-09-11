@@ -1,0 +1,4 @@
+mariadbdata/*
+!mariadbdata/.gitkeep
+.vscode/
+*.log
