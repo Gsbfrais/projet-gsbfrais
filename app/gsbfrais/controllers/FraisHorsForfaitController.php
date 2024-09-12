@@ -61,12 +61,15 @@ class FraisHorsForfaitController extends Controller
     private function verifierInfosFraisHorsForfait($dateFrais, $libelle, $montant): string
     {
         $errors = '';
+       
         if (empty($dateFrais) == true) {
             $errors .= "Vous devez renseigner la date<br>";
         } elseif (estDatevalide($dateFrais) == false) {
             $errors .= "Date invalide";
         } elseif (estDateDepassee($dateFrais) == true) {
             $errors .= "date d'enregistrement du frais dépassé depuis plus de 1 an<br>";
+        } elseif ($_SESSION['date_embauche'] > $dateFrais) {
+            $errors .= "La date doit être supérieure à votre date d'embauche.<br> ";
         }
         if (empty($libelle) == true) {
             $errors .= "Le libellé est obligatoire<br>";
@@ -74,8 +77,8 @@ class FraisHorsForfaitController extends Controller
 
         if ($montant === false) { // comparaison en type ET en valeur !
             $errors .= "Le montant doit être renseigné et numérique<br>";
-        }elseif($montant<=0){
-            $errors .="Le montant doit être strictement supérieur à 0";
+        } elseif($montant<=0){
+            $errors .="Le montant doit être strictement supérieur à 0<br";
         }
 
         return $errors;
