@@ -68,14 +68,16 @@ class FraisHorsForfaitController extends Controller
         } elseif (estDateDepassee($dateFrais) == true) {
             $errors .= "date d'enregistrement du frais dépassé depuis plus de 1 an<br>";
         }
-
         if (empty($libelle) == true) {
             $errors .= "Le libellé est obligatoire<br>";
         }
 
         if ($montant === false) { // comparaison en type ET en valeur !
             $errors .= "Le montant doit être renseigné et numérique<br>";
+        }elseif($montant<=0){
+            $errors .="Le montant doit être strictement supérieur à 0";
         }
+
         return $errors;
     }
 
