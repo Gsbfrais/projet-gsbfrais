@@ -42,8 +42,8 @@
             </table>
 
             <p class="mt-5 text-warning">
-                Statut de la fiche de frais : clôturé<br>
-                Montant validé : 0.00 €
+                Statut de la fiche de frais : <?= $laFicheFrais->code_statut ?><br>
+                Montant validé : <?= $laFicheFrais->montant_valide ?> €
             </p>
     </section>
 

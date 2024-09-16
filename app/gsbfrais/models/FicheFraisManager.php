@@ -99,7 +99,7 @@ class FicheFraisManager extends Model
     public function getFicheFrais(int $idVisiteur, int $mois): object
     {
         $sql = "select nom, prenom, fichefrais.code_statut, fichefrais.date_modif,  
-                    (select sum(fraisforfait.quantite * categoriefraisforfait.prix_unitaire) 
+                    (select ifnull(sum(fraisforfait.quantite * categoriefraisforfait.prix_unitaire), 0)
                         from fraisforfait
                         join categoriefraisforfait on fraisforfait.code_categorie = categoriefraisforfait.code 
                         where fraisforfait.id_visiteur = fichefrais.id_visiteur
