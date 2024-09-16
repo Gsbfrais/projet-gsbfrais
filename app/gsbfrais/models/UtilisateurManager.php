@@ -20,7 +20,7 @@ class UtilisateurManager extends Model
         $utilisateur = false;
 
         $sql = "select utilisateur.id, utilisateur.nom, utilisateur.prenom, utilisateur.login, utilisateur.mot_passe, 
-                profil.nom as nom_profil, utilisateur.id_region
+                profil.nom as nom_profil, utilisateur.id_region,utilisateur.date_embauche
                 from utilisateur
                 join profil on profil.id = id_profil
                 where login=:login";
