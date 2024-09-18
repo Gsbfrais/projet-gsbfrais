@@ -20,9 +20,10 @@ class UtilisateurManager extends Model
         $utilisateur = false;
 
         $sql = "select utilisateur.id, utilisateur.nom, utilisateur.prenom, utilisateur.login, utilisateur.mot_passe, 
-                profil.nom as nom_profil, utilisateur.id_region,utilisateur.date_embauche
+                profil.nom as nom_profil, utilisateur.id_region,utilisateur.date_embauche,region.plafondKm
                 from utilisateur
                 join profil on profil.id = id_profil
+                join region on region.id = id_region
                 where login=:login";
         $stmt = $this->db->prepare($sql);
         $ret = $stmt->execute(array(

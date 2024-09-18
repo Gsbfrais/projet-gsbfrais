@@ -55,7 +55,7 @@
                     <?php foreach ($lesCategories as $uneCategorie) :
                         $codeCategorie = $uneCategorie->code;
                         $libelle = $codeCategorie . ' - ' . $uneCategorie->libelle;
-                        if ($codeCategorie == $categorieSelectionnee) :
+                        if ($codeCategorie == $codeCategorieSelectionnee) :
                             echo '<option selected value="' . $codeCategorie . '">' . htmlspecialchars($libelle) . '</option>';
                         else :
                             echo '<option value="' . $codeCategorie . '">' . htmlspecialchars($libelle) . '</option>';
@@ -66,7 +66,7 @@
         </div>
 
         <div class="row mb-3">
-            <label for="montant" class="col-3 col-lg-2 col-form-label">Quantité</label>
+            <label for="quantite" class="col-3 col-lg-2 col-form-label">Quantité</label>
             <div class="col-9 col-lg-10">
                 <input type="text" class="form-control" id="quantite" name="quantite" value="<?php if (isset($quantite)) {
                                                                                                     echo $quantite;

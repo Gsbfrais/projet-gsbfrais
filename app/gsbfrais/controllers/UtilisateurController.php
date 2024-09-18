@@ -47,6 +47,7 @@ class UtilisateurController extends Controller
             $_SESSION['profilUtil'] =  $utilisateur->nom_profil;
             $_SESSION['idRegion'] =  $utilisateur->id_region;
             $_SESSION['date_embauche'] =  $utilisateur->date_embauche;
+            $_SESSION['plafondKm'] = $utilisateur->plafondKm;
         }
         return $errors;
     }
