@@ -69,11 +69,12 @@ class FraisForfaitController extends Controller
         $mm = substr($this->mois, 4, 2);
         $aa = substr($this->mois, 0, 4);
         $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
+        
         if ($quantite > $nbJourMois) {
             $errors .= "La quantité doit être inférieure au nombre de jours du mois<br>";
         }
         
-        if($codeCategorie == 'KM' &&  $_SESSION['plafondKm'] > $quantite  ){
+        if($codeCategorie == 'KM' &&  $_SESSION['plafondKm'] < $quantite  ){
             $errors .= "Le plafond kilometrique n'est pas respecter<br>";
         }
 
