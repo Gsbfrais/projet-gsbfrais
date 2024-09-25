@@ -52,7 +52,9 @@ class FraisForfaitController extends Controller
             'lesCategories' => $lesCategories,
             'errorMessage' => $errorMessage,
             'codeCategorieSelectionnee' => $codeCategorieSelectionnee,
-            'quantite' => $quantite
+            'quantite' => $quantite,
+            'plafondKm' => $_SESSION['plafondKm']
+
         ]);
     }
 
@@ -70,7 +72,7 @@ class FraisForfaitController extends Controller
         $aa = substr($this->mois, 0, 4);
         $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
         
-        if ($quantite > $nbJourMois) {
+        if ($quantite > $nbJourMois && $codeCategorie == "ETP") {
             $errors .= "La quantité doit être inférieure au nombre de jours du mois<br>";
         }
         

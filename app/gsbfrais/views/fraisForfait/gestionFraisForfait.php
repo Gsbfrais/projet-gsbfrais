@@ -1,5 +1,10 @@
 <h1 class="container-lg text-center">Saisir mes frais forfaitisés pour la période <?= $periode ?></h1>
 
+<section class="container-lg col-lg-7 mb-5">
+<p class="text-warning"> Plafond kilometrique MAX: <?=$plafondKm ?></p>
+
+</section>
+
 <!-- LISTE DES FRAIS FORFAIT DÉJÀ SAISIS -->
 <section class="container-lg col-lg-7 mb-5">
     <h2 class="text-info  border-bottom border-info">Descriptif des frais forfaitisés déjà saisis</h2>
@@ -82,4 +87,5 @@
         </div>
     </form>
 </section>
+
 
