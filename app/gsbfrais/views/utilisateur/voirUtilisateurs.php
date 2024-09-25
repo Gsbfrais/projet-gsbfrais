@@ -48,7 +48,6 @@
                 <?php endforeach; ?>
             </table>
         <?php endif; ?>
+        <a class="btn btn-primary" href="ajouterUtilisateur"> Ajouter</a>
     </div>
-
-
 </section>

@@ -68,7 +68,7 @@ class FraisForfaitController extends Controller
         $mm = substr($this->mois, 4, 2);
         $aa = substr($this->mois, 0, 4);
         $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
-        if ($quantite > $nbJourMois) {
+        if ($quantite > $nbJourMois && $codeCategorie == 'ETP') {
             $errors .= "La quantité doit être inférieure au nombre de jours du mois<br>";
         }
         return $errors;

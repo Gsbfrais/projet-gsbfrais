@@ -117,6 +117,10 @@ try {
             $controller = new UtilisateurController();
             $controller->modifierUtilisateur($idUtilisateur);
             break;
+        case 'ajouterUtilisateur':
+            $controller = new UtilisateurController();
+            $controller->ajouterUtilisateur();
+            break;
         case 'voirDetailFicheFrais':
             $idVisiteur = filter_input(INPUT_GET, 'idVisiteur', FILTER_VALIDATE_INT);
             $mois = filter_input(INPUT_GET, 'mois', FILTER_VALIDATE_INT);
