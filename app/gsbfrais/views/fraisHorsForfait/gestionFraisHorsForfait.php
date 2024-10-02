@@ -45,6 +45,7 @@
         <tr>
             <td>Echelon : <?php echo $echelon->echelon ?></td>
             <td>Plafond : <?php echo $echelon->plafond ?></td>
+            <td>Plafond : <?php echo $montantActuel ?></td>
         </tr>
     </table>
 </section>

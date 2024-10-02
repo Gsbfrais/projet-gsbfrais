@@ -58,8 +58,23 @@ class FraisHorsForfaitController extends Controller
             'dateFrais' => $dateFrais,
             'libelle' => $libelle,
             'montant' => $montant,
-            'echelon' => $echelonUtilisateur
+            'echelon' => $echelonUtilisateur,
+            'montantActuel' => $this->montantActuel()
         ]);
+    }
+
+    private function montantActuel(): float
+    {
+        $fraisHorsForfaitManager = new FraisHorsForfaitManager();
+
+        $fraisHorsForfaitUtilisateur = $fraisHorsForfaitManager->getLesFraisHorsForfait($_SESSION['idUtil'], $this->mois);
+
+        $montant = 0.0;
+        foreach ($fraisHorsForfaitUtilisateur as $f) {
+            $montant += $f->montant;
+        }
+
+        return $montant;
     }
 
     private function verifierInfosFraisHorsForfait($dateFrais, $libelle, $montant, $plafondUtilisateur): string
@@ -85,7 +100,7 @@ class FraisHorsForfaitController extends Controller
             $errors .= "Le montant doit être strictement supérieur à 0<br";
         }
 
-        if ($montant > $plafondUtilisateur->plafond) {
+        if ($this->montantActuel() + $montant > $plafondUtilisateur->plafond) {
             $errors .= "Le montant doit être inférieur ou égal à votre plafond (" . $plafondUtilisateur->plafond . "€)";
         }
 
