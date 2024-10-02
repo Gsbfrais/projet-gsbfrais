@@ -106,6 +106,12 @@ try {
             PRIMARY KEY(`id_visiteur`, `mois`, `num`),
             FOREIGN KEY(`id_visiteur`, `mois`) REFERENCES `fichefrais`(`id_visiteur`, `mois`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+        CREATE TABLE `echelon` (
+            `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `echelon` char(11) NOT NULL,
+            `plafond` int(11) NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
     ";
 
     $pdo->exec($createTables);
@@ -188,6 +194,11 @@ try {
         (32, 'Jourdain', 'Florent', 'fjourdain', 'password', '2022-01-15', NULL, 10, 4),
         (33, 'Rialhe', 'Romane', 'rrialhe', 'password', '2022-01-26', NULL, 11, 4),
         (34, 'Belle', 'Bastien', 'bbelle', 'password', '2022-02-10', NULL, 13, 4);
+
+        INSERT INTO `echelon` (`id`, `echelon`, `plafond`) VALUES
+        (1, 'A', 600),
+        (2, 'B', 850),
+        (3, 'C', 1200);
     ";
     $pdo->exec($insertData);
 

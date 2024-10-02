@@ -129,11 +129,7 @@ class FraisHorsForfaitController extends Controller
 
         $lesFraisHorsForfait = $fraisHorsForfaitManager->getLesFraisHorsForfait($_SESSION['idUtil'], $this->mois);
 
-        $this->render('fraisHorsForfait/gestionFraisHorsForfait', [
-            'title' => 'Saisie frais hors forfait',
-            'periode' => date("m/Y"),
-            'lesFraisHorsForfait' => $lesFraisHorsForfait,
-            'errorMessage' => ''
-        ]);
+        header('Location: saisirFraisHorsForfait');
+
     }
 }
