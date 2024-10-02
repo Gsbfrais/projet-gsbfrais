@@ -37,6 +37,18 @@
 
 </section>
 
+<!-- AFFICHAGE ECHELON -->
+<section class="container-lg col-lg-7 mb-5">
+    <h2 class="text-info  border-bottom border-info">Nouvel élément hors forfait</h2>
+
+    <table class="table">
+        <tr>
+            <td>Echelon : <?php echo $echelon->echelon ?></td>
+            <td>Plafond : <?php echo $echelon->plafond ?></td>
+        </tr>
+    </table>
+</section>
+
 <!-- SAISIE DES FRAIS HORS FORFAIT -->
 <section class="container-lg col-lg-7 mb-5">
     <h2 class="text-info  border-bottom border-info">Nouvel élément hors forfait</h2>
