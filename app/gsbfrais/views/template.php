@@ -41,6 +41,7 @@
                                     <a class="dropdown-item" href="saisirFraisForfait">Saisie frais forfait</a>
                                     <a class="dropdown-item" href="saisirFraisHorsForfait">Saisie frais hors forfait</a>
                                     <a class="dropdown-item" href="voirFicheFrais" title="Consultation de mes fiches de frais">Voir mes fiches de frais</a>
+                                    <a class="dropdown-item" href="voirFichesFraisNonRemboursées" title="Consultation de mes fiches de frais non remboursées">Voir mes fiches de frais non remboursées</a>
                                 </div>
                             </li>
                         <?php endif; ?>
