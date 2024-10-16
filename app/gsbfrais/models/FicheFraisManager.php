@@ -297,7 +297,7 @@ class FicheFraisManager extends Model
      */
     public function getLesFichesFraisAValider(int $mois):array
     {
-        $sql = "select nom, prenom, id_visiteur, mois, nb_justificatifs, date_format(date_modif, '%m/%d/%Y') as date_modif,
+        $sql = "SELECT nom, prenom, id_visiteur, mois, nb_justificatifs, date_format(date_modif, '%m/%d/%Y') as date_modif,
                 (
                     select sum(quantite * prix_unitaire)
                     from fraisforfait
@@ -327,6 +327,46 @@ class FicheFraisManager extends Model
         }
         return $stmt->fetchAll();
     }
+    public function getLesFichesFraisARembourser(int $mois): array
+{
+    // Requête SQL pour récupérer les fiches à rembourser (statut 'VA' par exemple)
+    $sql = "SELECT nom, prenom, id_visiteur, mois, nb_justificatifs, 
+                   date_format(date_modif, '%m/%d/%Y') AS date_modif,
+                   (
+                       SELECT SUM(quantite * prix_unitaire)
+                       FROM fraisforfait
+                       JOIN categoriefraisforfait ON fraisforfait.code_categorie = categoriefraisforfait.code
+                       WHERE fraisforfait.id_visiteur = fichefrais.id_visiteur
+                       AND fraisforfait.mois = fichefrais.mois
+                   ) AS montant_forfait,
+                   (
+                       SELECT SUM(montant)
+                       FROM fraishorsforfait
+                       WHERE fraishorsforfait.id_visiteur = fichefrais.id_visiteur
+                       AND fraishorsforfait.mois = fichefrais.mois
+                   ) AS montant_horsforfait
+            FROM fichefrais
+            JOIN utilisateur ON utilisateur.id = fichefrais.id_visiteur
+            WHERE code_statut = 'VA'  -- Statut 'VA' pour validé, en attente de remboursement
+            AND mois = :mois
+            ORDER BY fichefrais.id_visiteur DESC";
+
+    // Préparation et exécution de la requête
+    $stmt = $this->db->prepare($sql);
+    $ret = $stmt->execute([
+        ':mois' => $mois
+    ]);
+
+    // Vérification de l'exécution de la requête
+    if ($ret == false) {
+        http_response_code(500);
+        throw new \Exception('Problème requête getLesFichesFraisARembourser');
+    }
+
+    // Retour des résultats sous forme de tableau
+    return $stmt->fetchAll();
+}
+
 
     /**
      * Retourne les mois (aaaamm) pour lesquels les visiteurs d'une région donnée ont une fiche de frais

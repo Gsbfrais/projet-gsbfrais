@@ -20,18 +20,21 @@ class IndicateursController extends Controller
             http_response_code(403);
             throw new \Exception('Fonctionnalité saisirFraisForfait (FraisForfaitController) non autorisée');
         }
-
+        $anneeCourante = substr($this-> mois,0,4);
+        $debut = $anneeCourante.'01';
+        $fin = $anneeCourante.'12';
         $indicateursManager = new IndicateursManager(); 
-        $lesFraisHorsForfait = $indicateursManager->getMontantTotalLesFraisHorsForfait($_SESSION['idUtil']);
+        $montantFraisVAouRB = $indicateursManager->getMontantTotalFraisVAouRB($debut,$fin,$_SESSION['idUtil']);
         
-        $lesFraisForfaities = new IndicateursManager();
-        $lesFraisForfaities = $indicateursManager ->getMontantTotalFraisForfaities($_SESSION['idUtil']);
+        $lesFraisForfaitises = new IndicateursManager();
+        $montantFraisCRouCL = $indicateursManager ->getMontantTotalFraisCRouCL($debut,$fin,$_SESSION['idUtil']);
 
         $this->render('indicateurs/detailIndicateurs', [
             'title' => 'Montant total des frais',
-            'lesFraisHorsForfait' => $lesFraisHorsForfait, 
-            'lesFraisForfaities' => $lesFraisForfaities,
+            'montantFraisVAouRB' => $montantFraisVAouRB, 
+            'montantFraisCRouCL' => $montantFraisCRouCL,
         ]);
+      
     }
     
     
