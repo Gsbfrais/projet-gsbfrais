@@ -45,7 +45,8 @@ try {
 
         CREATE TABLE `region` (
             `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            `nom` varchar(40) NOT NULL
+            `nom` varchar(40) NOT NULL,
+            `plafondKm` int DEFAULT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
         CREATE TABLE `statutfichefrais` (
@@ -141,25 +142,25 @@ try {
         ('NUI', 'Nuitée Hôtel', '80.00'),
         ('REP', 'Repas Restaurant', '25.00');
 
-        INSERT INTO `region` (`id`, `nom`) VALUES
-        (1, 'Auvergne-Rhône-Alpes'),
-        (2, 'Bourgogne-Franche-Comté'),
-        (3, 'Bretagne'),
-        (4, 'Centre-Val de Loire'),
-        (5, 'Corse'),
-        (6, 'Grand Est'),
-        (7, 'Hauts-de-France'),
-        (8, 'Ile-de-France'),
-        (9, 'Normandie'),
-        (10, 'Nouvelle-Aquitaine'),
-        (11, 'Occitanie'),
-        (12, 'Pays de la Loire'),
-        (13, 'Provence-Alpes-Côte d''Azur'),
-        (14, 'Guadeloupe'),
-        (15, 'Guyane'),
-        (16, 'Martinique'),
-        (17, 'La Réunion'),
-        (18, 'Mayotte');
+        INSERT INTO `region` (`id`, `nom`, `plafondKm`) VALUES
+        (1, 'Auvergne-Rhône-Alpes', 7500),
+        (2, 'Bourgogne-Franche-Comté', 8000),
+        (3, 'Bretagne', 9000),
+        (4, 'Centre-Val de Loire', 9000),
+        (5, 'Corse', 7500),
+        (6, 'Grand Est', 8000),
+        (7, 'Hauts-de-France', 8000),
+        (8, 'Ile-de-France', 20000),
+        (9, 'Normandie', 9000),
+        (10, 'Nouvelle-Aquitaine', 7000),
+        (11, 'Occitanie', 7000),
+        (12, 'Pays de la Loire', 9000),
+        (13, 'Provence-Alpes-Côte d''Azur', 7500),
+        (14, 'Guadeloupe', 6000),
+        (15, 'Guyane', 6000),
+        (16, 'Martinique', 6000),
+        (17, 'La Réunion', 6000),
+        (18, 'Mayotte', 6000);
 
         INSERT INTO `profil` (`id`, `nom`) VALUES
         (1, 'administrateur'),

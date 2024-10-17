@@ -1,11 +1,7 @@
 <?php
 
 use Gsbfrais\Autoloader;
-use Gsbfrais\Controllers\{AccueilController,
-    FicheFraisController,
-    FraisForfaitController,
-    FraisHorsForfaitController,
-    UtilisateurController};
+use Gsbfrais\Controllers\{AccueilController, FicheFraisController, FraisForfaitController, FraisHorsForfaitController, UtilisateurController,IndicateursController};
 
 session_start();
 require_once('config/config.php');
@@ -136,6 +132,13 @@ try {
             $controller = new FicheFraisController();
             $controller->voirDetailFicheFrais($idVisiteur, $mois);
             break;
+        // Indicateurs
+        case 'voirIndicateurs':
+            $controller = new IndicateursController();
+            $controller->voirIndicateursVM();
+            break;
+
+
         default:
             http_response_code(404);
             throw new Exception('Not Found');

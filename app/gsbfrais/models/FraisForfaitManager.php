@@ -33,6 +33,9 @@ class FraisForfaitManager extends Model
         }
         return $stmt->fetchAll();
     }
+   
+
+
 
     /**
      * Retourne tous les frais forfaitisés des visiteurs d'une région pour un mois donnés
