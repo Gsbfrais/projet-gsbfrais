@@ -243,7 +243,6 @@ class UtilisateurController extends Controller
 
         header('Location: voirUtilisateurs');
     }
-}
     // Autres méthodes ...
 
     /**

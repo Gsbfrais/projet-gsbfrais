@@ -213,43 +213,7 @@ try {
         (1, 'junior', 5),
         (2, 'confirmé', 8),
         (3, 'expert', 12);
-
-        INSERT INTO `utilisateur` (`id`, `nom`, `prenom`, `login`, `mot_passe`, `date_embauche`, `date_depart`, `id_region`, `id_profil`, `id_niveauexpertise`) VALUES
-        (1, 'Durieux', 'Justine', 'jdurieux', 'password', '2024-09-11', NULL, 10, 2, 2),
-        (2, 'Bioret', 'Luc', 'lbioret', 'password', '2010-09-01', NULL, 11, 2, 2),
-        (3, 'Frémont', 'Fernande', 'ffremont', 'password', '2011-10-01', '2020-09-01', 13, 2, 2),
-        (4, 'Clepkens', 'Christophe', 'cclepkens', 'password', '2011-10-27', NULL, 8, 3, NULL),
-        (5, 'Andre', 'David', 'dandre', 'password', '2011-11-01', NULL, 11, 2, 3),
-        (6, 'Raquin', 'Mélanie', 'mraquin', 'password', '2011-11-23', '2017-05-27', 13, 2, 3),
-        (7, 'Duncombe', 'Claude', 'cduncombe', 'password', '2012-01-03', NULL, 10, 3, NULL),
-        (8, 'Prévost', 'Samuel', 'sprevost', 'password', '2012-02-15', NULL, 8, 4, NULL),
-        (9, 'Durant', 'Sabine', 'sdurant', 'password', '2012-05-01', NULL, 11, 2, 3),
-        (10, 'Bonnot', 'Paul', 'pbonnot', 'password', '2012-08-01', NULL, 10, 2, 2),
-        (11, 'Desnost', 'Pierre', 'pdesnost', 'password', '2014-02-05', NULL, 10, 2, 2),
-        (12, 'Finck', 'Jacques', 'jfinck', 'password', '2014-11-10', NULL, 13, 2, 3),
-        (13, 'Rabaud', 'Marilou', 'mrabaud', 'password', '2014-11-10', NULL, 12, 4, NULL),
-        (14, 'Cottin', 'Vincent', 'vcottin', 'password', '2014-11-18', NULL, 8, 2, 1),
-        (15, 'Durant', 'Pierre', 'pdurant', 'password', '2015-03-01', NULL, 13, 3, NULL),
-        (16, 'Desmarquest', 'Nathalie', 'ndesmarquest', 'password', '2015-11-12', NULL, 12, 2, 2),
-        (17, 'Lapointe', 'Marie', 'mlapointe', 'password', '2015-11-12', NULL, 8, 2, 3),
-        (18, 'Villechalane', 'Louis', 'lvillachane', 'password', '2015-12-21', NULL, 11, 2, 2),
-        (19, 'Marionnaud', 'Salomé', 'smarionnaud', 'password', '2016-02-08', NULL, 13, 1, NULL),
-        (20, 'Debelle', 'Michel', 'mdebelle', 'password', '2016-11-23', '2017-12-01', 8, 2, 3),
-        (21, 'Debelle', 'Jeanne', 'jdebelle', 'password', '2016-12-01', NULL, 12, 3, NULL),
-        (22, 'Loubert', 'Armand', 'aloubert', 'password', '2016-12-01', NULL, 8, 2, 2),
-        (23, 'Chaize', 'Henri', 'hchaize', 'password', '2017-09-23', NULL, 8, 2, 2),
-        (24, 'Cacheux', 'Bernard', 'bcacheux', 'password', '2023-11-12', NULL, 8, 2, 2),
-        (25, 'Bentot', 'Pascal', 'pbentot', 'password', '2018-07-20', NULL, 11, 3, NULL),
-        (26, 'Bunisset', 'Denise', 'dbunisset', 'password', '2018-12-05', NULL, 8, 2, 2),
-        (27, 'De', 'Eric', 'ede', 'password', '2018-12-14', NULL, 8, 2, 2),
-        (28, 'Bunisset', 'Francis', 'fbunisset', 'password', '2019-08-28', NULL, 8, 2, 1),
-        (29, 'Daburon', 'François', 'fdaburon', 'password', '2020-02-11', NULL, 8, 2, 2),
-        (30, 'Bedos', 'Christian', 'cbedos', 'password', '2020-03-01', NULL, 11, 2, 3),
-        (31, 'Adebroise', 'Michel', 'madebroise', 'password', '2021-10-15', NULL, 12, 2, 2),
-        (32, 'Jourdain', 'Florent', 'fjourdain', 'password', '2022-01-15', NULL, 10, 4, NULL),
-        (33, 'Rialhe', 'Romane', 'rrialhe', 'password', '2022-01-26', NULL, 11, 4, NULL),
-        (34, 'Belle', 'Bastien', 'bbelle', 'password', '2022-02-10', NULL, 13, 4, NULL);
-    ";
+        ";
     $pdo->exec($insertData);
 
     //*************************************************************************** */

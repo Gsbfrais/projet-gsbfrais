@@ -234,8 +234,7 @@ function creationFraisHorsForfait($pdo)
                 $hasardJour = "0" . $hasardJour;
             }
             $hasardMois = $numAnnee . "-" . $numMois . "-" . $hasardJour;
-            $req        = "insert into fraishorsforfait(id_visiteur,mois,libelle,date,montant)
-            values('$idVisiteur','$mois','$lib','$hasardMois',$hasardMontant);";
+            $req = "insert into fraishorsforfait(id_visiteur,mois,libelle,date,montant) values('$idVisiteur','$mois','$lib','$hasardMois',$hasardMontant);";
             $cpt++;
             try {
                 $pdo->exec($req);
