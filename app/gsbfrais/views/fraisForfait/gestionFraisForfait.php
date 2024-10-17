@@ -2,6 +2,7 @@
 
 <!-- LISTE DES FRAIS FORFAIT DÉJÀ SAISIS -->
 <section class="container-lg col-lg-7 mb-5">
+    <p class="text-warning">Plafond forfait étape : <?= $plafondFraisETP ?>  </p>
     <h2 class="text-info  border-bottom border-info">Descriptif des frais forfaitisés déjà saisis</h2>
     <div class=" row">
         <?php if (count($lesFraisForfait) > 0) : ?>
