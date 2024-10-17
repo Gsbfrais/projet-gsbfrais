@@ -168,6 +168,16 @@ try {
         (3, 'délégué régional'),
         (4, 'comptable');
 
+        INSERT INTO `echelon` (`id`, `echelon`, `plafond`) VALUES
+        (1, 'A', 600),
+        (2, 'B', 850),
+        (3, 'C', 1200);
+
+        INSERT INTO `niveauexpertise` (`id`, `libelle`,  `plafondetp`) VALUES
+        (1, 'junior', 5),
+        (2, 'confirmé', 8),
+        (3, 'expert', 12);
+
         INSERT INTO `utilisateur` (`id`, `nom`, `prenom`, `login`, `mot_passe`, `date_embauche`, `date_depart`, `id_region`, `id_profil`, `id_niveauexpertise`) VALUES
         (1, 'Durieux', 'Justine', 'jdurieux', 'password', '2024-09-11', NULL, 10, 2 ,2),
         (2, 'Bioret', 'Luc', 'lbioret', 'password', '2010-09-01', NULL, 11, 2 ,2),
@@ -202,17 +212,7 @@ try {
         (31, 'Adebroise', 'Michel', 'madebroise', 'password', '2021-10-15', NULL, 12, 2,2),
         (32, 'Jourdain', 'Florent', 'fjourdain', 'password', '2022-01-15', NULL, 10, 4,NULL),
         (33, 'Rialhe', 'Romane', 'rrialhe', 'password', '2022-01-26', NULL, 11, 4,NULL),
-        (34, 'Belle', 'Bastien', 'bbelle', 'password', '2022-02-10', NULL, 13, 4,NULL),;
-
-        INSERT INTO `echelon` (`id`, `echelon`, `plafond`) VALUES
-        (1, 'A', 600),
-        (2, 'B', 850),
-        (3, 'C', 1200);
-
-        INSERT INTO `niveauexpertise` (`id`, `libelle`,  `plafondetp`) VALUES
-        (1, 'junior', 5),
-        (2, 'confirmé', 8),
-        (3, 'expert', 12);
+        (34, 'Belle', 'Bastien', 'bbelle', 'password', '2022-02-10', NULL, 13, 4,NULL);
         ";
     $pdo->exec($insertData);
 
