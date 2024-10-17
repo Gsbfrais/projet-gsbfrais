@@ -51,7 +51,8 @@ class FraisForfaitController extends Controller
             'lesCategories' => $lesCategories,
             'errorMessage' => $errorMessage,
             'codeCategorie' => $codeCategorie,
-            'quantite' => $quantite
+            'quantite' => $quantite,
+            'plafondFraisEtp' => $_SESSION['plafondetp'],
         ]);
     }
 
@@ -64,7 +65,12 @@ class FraisForfaitController extends Controller
 
         if ($quantite === false) { // comparaison en type ET en valeur !
             $errors .= "La quantité doit être renseignée et numérique<br>";
+        }else {
+            if ($codeCategorie == 'ETP' && $quantite > $_SESSION['plafond_etp']) {
+                $errors .= "La quantité  ne doit pas dépasser {$_SESSION['plafond_etp']}<br>";
+            }
         }
+         
         $mm = substr($this->mois, 4, 2);
         $aa = substr($this->mois, 0, 4);
         $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
