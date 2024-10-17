@@ -1,4 +1,5 @@
 <?php
+
 use Gsbfrais\Autoloader;
 use Gsbfrais\Controllers\{AccueilController, FicheFraisController, FraisForfaitController, FraisHorsForfaitController, UtilisateurController};
 
@@ -22,16 +23,20 @@ try {
             $controller = new AccueilController();
             $controller->accueil();
             break;
-        // Gestion utilisateurs
+            // Gestion utilisateurs
         case 'login':
             $controller = new UtilisateurController();
             $controller->login();
             break;
         case 'logout':
-                $controller = new UtilisateurController();
-                $controller->logout();
-                break;
-        // Gestion des frais forfaitisés
+            $controller = new UtilisateurController();
+            $controller->logout();
+            break;
+        case 'changerMotPasse':
+            $controller = new UtilisateurController();
+            $controller->changerMotPasse();
+            break;
+            // Gestion des frais forfaitisés
         case 'saisirFraisForfait':
             $controller = new FraisForfaitController();
             $controller->saisirFraisForfait();
@@ -46,7 +51,7 @@ try {
             $controller = new FraisForfaitController();
             $controller->supprimerFraisForfait($codeCategorie);
             break;
-        // Gestion des frais hors forfait
+            // Gestion des frais hors forfait
         case 'saisirFraisHorsForfait':
             $controller = new FraisHorsForfaitController();
             $controller->saisirFraisHorsForfait();
@@ -60,12 +65,12 @@ try {
             $controller = new FraisHorsForfaitController();
             $controller->supprimerFraisHorsForfait($numFrais);
             break;
-        // Affichage des fiches de frais
+            // Affichage des fiches de frais
         case 'voirFicheFrais':
             $controller = new FicheFraisController();
             $controller->voirFicheFrais();
             break;
-        // Validation et clotûre des fiches de frais
+            // Validation et clotûre des fiches de frais
         case 'cloturerFichesFrais':
             $controller = new FicheFraisController();
             $controller->cloturerFichesFrais();
@@ -84,7 +89,7 @@ try {
             $controller = new FicheFraisController();
             $controller->validerFicheFrais($idVisiteur, $mois);
             break;
-        // Consultations pour délégué régional
+            // Consultations pour délégué régional
         case 'voirFichesFraisRegion':
             $controller = new FicheFraisController();
             $controller->voirFichesFraisRegion();
