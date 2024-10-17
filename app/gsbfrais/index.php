@@ -1,7 +1,11 @@
 <?php
 
 use Gsbfrais\Autoloader;
-use Gsbfrais\Controllers\{AccueilController, FicheFraisController, FraisForfaitController, FraisHorsForfaitController, UtilisateurController};
+use Gsbfrais\Controllers\{AccueilController,
+    FicheFraisController,
+    FraisForfaitController,
+    FraisHorsForfaitController,
+    UtilisateurController};
 
 session_start();
 require_once('config/config.php');
@@ -32,6 +36,7 @@ try {
             $controller = new UtilisateurController();
             $controller->logout();
             break;
+        // Gestion des frais forfaitisés
         case 'changerMotPasse':
             $controller = new UtilisateurController();
             $controller->changerMotPasse();
@@ -93,6 +98,33 @@ try {
         case 'voirFichesFraisRegion':
             $controller = new FicheFraisController();
             $controller->voirFichesFraisRegion();
+            break;
+        // Gestion des utilisateurs
+        case 'voirUtilisateurs':
+            $controller = new UtilisateurController();
+            $controller->voirUtilisateurs();
+            break;
+        case 'supprimerUtilisateur':
+            $idUtilisateur = filter_input(INPUT_GET, 'idUtilisateur', FILTER_VALIDATE_INT);
+            if (empty($idUtilisateur)) {
+                http_response_code(400);
+                throw new Exception('Bad request');
+            }
+            $controller = new UtilisateurController();
+            $controller->supprimerUtilisateur($idUtilisateur);
+            break;
+        case 'modifierUtilisateur':
+            $idUtilisateur = filter_input(INPUT_GET, 'idUtilisateur', FILTER_VALIDATE_INT);
+            if (empty($idUtilisateur)) {
+                http_response_code(400);
+                throw new Exception('Bad request');
+            }
+            $controller = new UtilisateurController();
+            $controller->modifierUtilisateur($idUtilisateur);
+            break;
+        case 'ajouterUtilisateur':
+            $controller = new UtilisateurController();
+            $controller->ajouterUtilisateur();
             break;
         case 'voirDetailFicheFrais':
             $idVisiteur = filter_input(INPUT_GET, 'idVisiteur', FILTER_VALIDATE_INT);
