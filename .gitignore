@@ -2,4 +2,5 @@ mariadbdata/*
 !mariadbdata/.gitkeep
 .vscode/
 *.log
+.idea
 *.pem

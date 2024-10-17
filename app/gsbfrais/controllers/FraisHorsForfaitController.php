@@ -1,7 +1,9 @@
 <?php
+
 namespace Gsbfrais\Controllers;
 
-use Gsbfrais\models\{FicheFraisManager, FraisHorsForfaitManager};
+use DateTime;
+use Gsbfrais\models\{EchelonManager, FicheFraisManager, FraisHorsForfaitManager, UtilisateurManager};
 
 class FraisHorsForfaitController extends Controller
 {
@@ -10,10 +12,12 @@ class FraisHorsForfaitController extends Controller
         parent::__construct();
     }
 
-    public function saisirFraisHorsForfait():void
+    public function saisirFraisHorsForfait(): void
     {
         $ficheFraisManager = new FicheFraisManager();
         $fraisHorsForfaitManager = new FraisHorsForfaitManager();
+        $echelonManager = new EchelonManager();
+        $echelonUtilisateur = $this->getEchelonUtilisateur();
 
         // Création de la fiche de frais du mois si elle n'existe pas encore
         if ($ficheFraisManager->estPremierFraisMois($_SESSION['idUtil'], $this->mois)) {
@@ -32,7 +36,7 @@ class FraisHorsForfaitController extends Controller
             $libelle = strip_tags($libelle);
             $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
 
-            $errorMessage = $this->verifierInfosFraisHorsForfait($dateFrais, $libelle, $montant);
+            $errorMessage = $this->verifierInfosFraisHorsForfait($dateFrais, $libelle, $montant, $echelonUtilisateur);
 
             // Mise à jour de la base de données si aucune erreur
             if (empty($errorMessage) == true) {
@@ -54,14 +58,29 @@ class FraisHorsForfaitController extends Controller
             'dateFrais' => $dateFrais,
             'libelle' => $libelle,
             'montant' => $montant,
-
+            'echelon' => $echelonUtilisateur,
+            'montantActuel' => $this->montantActuel()
         ]);
     }
 
-    private function verifierInfosFraisHorsForfait($dateFrais, $libelle, $montant): string
+    private function montantActuel(): float
+    {
+        $fraisHorsForfaitManager = new FraisHorsForfaitManager();
+
+        $fraisHorsForfaitUtilisateur = $fraisHorsForfaitManager->getLesFraisHorsForfait($_SESSION['idUtil'], $this->mois);
+
+        $montant = 0.0;
+        foreach ($fraisHorsForfaitUtilisateur as $f) {
+            $montant += $f->montant;
+        }
+
+        return $montant;
+    }
+
+    private function verifierInfosFraisHorsForfait($dateFrais, $libelle, $montant, $plafondUtilisateur): string
     {
         $errors = '';
-       
+
         if (empty($dateFrais) == true) {
             $errors .= "Vous devez renseigner la date<br>";
         } elseif (estDatevalide($dateFrais) == false) {
@@ -77,14 +96,37 @@ class FraisHorsForfaitController extends Controller
 
         if ($montant === false) { // comparaison en type ET en valeur !
             $errors .= "Le montant doit être renseigné et numérique<br>";
-        } elseif($montant<=0){
-            $errors .="Le montant doit être strictement supérieur à 0<br";
+        } elseif ($montant <= 0) {
+            $errors .= "Le montant doit être strictement supérieur à 0<br";
+        }
+
+        if ($this->montantActuel() + $montant > $plafondUtilisateur->plafond) {
+            $errors .= "Le montant doit être inférieur ou égal à votre plafond (" . $plafondUtilisateur->plafond . "€)";
         }
 
         return $errors;
     }
 
-    public function supprimerFraisHorsForfait($numFrais):void
+    private function getEchelonUtilisateur(): mixed
+    {
+        $utilisateurManager = new UtilisateurManager();
+        $echelonManager = new EchelonManager();
+
+        $echelons = $echelonManager->getLesEchelons();
+        $utilisateur = $utilisateurManager->getUtilisateurById($_SESSION['idUtil']);
+        $dateEmbaucheUtilisateur = DateTime::createFromFormat('Y-m-d', $utilisateur->date_embauche);
+
+        if ($dateEmbaucheUtilisateur < DateTime::createFromFormat('Y-m-d', '2001-01-01')) {
+            return $echelons[0];
+        } elseif ($dateEmbaucheUtilisateur < DateTime::createFromFormat('Y-m-d', '2010-12-31') && DateTime::createFromFormat('Y-m-d', '2001-01-01') < $dateEmbaucheUtilisateur) {
+            return $echelons[1];
+        } else {
+            return $echelons[2];
+        }
+
+    }
+
+    public function supprimerFraisHorsForfait($numFrais): void
     {
         $fraisHorsForfaitManager = new FraisHorsForfaitManager();
 
@@ -102,11 +144,7 @@ class FraisHorsForfaitController extends Controller
 
         $lesFraisHorsForfait = $fraisHorsForfaitManager->getLesFraisHorsForfait($_SESSION['idUtil'], $this->mois);
 
-        $this->render('fraisHorsForfait/gestionFraisHorsForfait', [
-            'title' => 'Saisie frais hors forfait',
-            'periode' => date("m/Y"),
-            'lesFraisHorsForfait' => $lesFraisHorsForfait,
-            'errorMessage' => ''
-        ]);
+        header('Location: saisirFraisHorsForfait');
+
     }
 }

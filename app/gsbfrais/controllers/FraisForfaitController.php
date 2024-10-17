@@ -54,7 +54,9 @@ class FraisForfaitController extends Controller
             'codeCategorieSelectionnee' => $codeCategorieSelectionnee,
             'quantite' => $quantite,
             'plafondKm' => $_SESSION['plafondKm']
-
+            'codeCategorie' => $codeCategorie,
+            'quantite' => $quantite,
+            'plafondFraisEtp' => $_SESSION['plafondetp'],
         ]);
     }
 
@@ -67,12 +69,17 @@ class FraisForfaitController extends Controller
 
         if ($quantite === false) { // comparaison en type ET en valeur !
             $errors .= "La quantité doit être renseignée et numérique<br>";
+        }else {
+            if ($codeCategorie == 'ETP' && $quantite > $_SESSION['plafond_etp']) {
+                $errors .= "La quantité  ne doit pas dépasser {$_SESSION['plafond_etp']}<br>";
+            }
         }
+         
         $mm = substr($this->mois, 4, 2);
         $aa = substr($this->mois, 0, 4);
         $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
-        
-        if ($quantite > $nbJourMois && $codeCategorie == "ETP") {
+
+        if ($quantite > $nbJourMois && $codeCategorie == 'ETP') {
             $errors .= "La quantité doit être inférieure au nombre de jours du mois<br>";
         }
         
