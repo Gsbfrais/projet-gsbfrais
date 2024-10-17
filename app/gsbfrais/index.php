@@ -71,7 +71,12 @@ try {
             $controller = new FicheFraisController();
             $controller->voirFicheFrais();
             break;
-            // Validation et clotûre des fiches de frais
+        // Affichage des fiches de frais non remboursées
+        case 'voirFichesFraisNonRemboursées':
+            $controller = new FicheFraisController();
+            $controller->voirFichesFraisNonRemboursees();
+            break;
+        // Validation et clotûre des fiches de frais
         case 'cloturerFichesFrais':
             $controller = new FicheFraisController();
             $controller->cloturerFichesFrais();

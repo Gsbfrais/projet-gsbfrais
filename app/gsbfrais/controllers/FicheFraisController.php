@@ -50,6 +50,18 @@ class FicheFraisController extends Controller
         ]);
     }
 
+    public function voirFichesFraisNonRemboursees()
+    {        
+        $ficheFraisManager = new FicheFraisManager();
+
+        $lesFichesFrais = $ficheFraisManager->getFichesFraisNonRemboursees($_SESSION['idUtil'], $this->mois);
+
+        $this->render('fichefrais/listeFichesFraisNonRembourseesVM', [
+            'title' => 'Mes fiches de frais non remboursées',
+            'lesFichesFrais' => $lesFichesFrais,
+        ]);
+    }
+
     public function cloturerFichesFrais()
     {
         if ($_SESSION['profilUtil'] != 'comptable') {
