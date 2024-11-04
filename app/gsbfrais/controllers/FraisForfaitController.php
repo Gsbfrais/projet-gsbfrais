@@ -16,6 +16,11 @@ class FraisForfaitController extends Controller
         $ficheFraisManager = new FicheFraisManager();
         $fraisForfaitManager = new FraisForfaitManager();
 
+        if ($_SESSION['profilUtil'] != "visiteur médical") {
+            http_response_code(403);
+            throw new \Exception("Vous n'êtes pas autorisé à accéder à cette ressource");
+        }
+
         // Création de la fiche de frais du mois si elle n'existe pas encore
         if ($ficheFraisManager->estPremierFraisMois($_SESSION['idUtil'], $this->mois)) {
             $ficheFraisManager->ajouteFicheFrais($_SESSION['idUtil'], $this->mois);
@@ -63,6 +68,13 @@ class FraisForfaitController extends Controller
     private function verifierQteFraisForfait($codeCategorie, $quantite): string
     {
         $errors = '';
+
+        $nbJour = cal_days_in_month(CAL_GREGORIAN, intval(date('n')), intval(date('o')));
+
+        if ($quantite > $nbJour) {
+            $errors .= "Vous ne pouvez pas rentrer une quantité supérieure au nombre de jour<br>";
+        }
+
         if (empty($codeCategorie) == true) {
             $errors .= "Vous devez renseigner le code catégorie<br>";
         }
