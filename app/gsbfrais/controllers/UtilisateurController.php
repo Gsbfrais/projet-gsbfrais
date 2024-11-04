@@ -2,6 +2,7 @@
 
 namespace Gsbfrais\Controllers;
 
+use Gsbfrais\models\EchelonManager;
 use Gsbfrais\models\ProfilManager;
 use Gsbfrais\models\RegionManager;
 use Gsbfrais\models\UtilisateurManager;
@@ -13,6 +14,11 @@ class UtilisateurController extends Controller
     {
         parent::__construct();
     }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
     public function login(): void
     {
         $errorMessage = '';
@@ -32,6 +38,10 @@ class UtilisateurController extends Controller
         ]);
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     private function validerConnexion(): string
     {
         $errors = '';
@@ -52,10 +62,14 @@ class UtilisateurController extends Controller
             $_SESSION['date_embauche'] = $utilisateur->date_embauche;
             $_SESSION['plafondKm'] = $utilisateur->plafondKm;
             $_SESSION['plafondetp'] = $utilisateur->plafondetp;
+            $_SESSION['id_niveauexpertise'] = $utilisateur->id_niveauexpertise;
         }
         return $errors;
     }
 
+    /**
+     * @return void
+     */
     public function logout(): void
     {
         // Détruit toutes les variables de session
@@ -81,6 +95,10 @@ class UtilisateurController extends Controller
         header("Location: " . ROOT_URL . "login");
     }
 
+    /**
+     * @return void
+     * @throws \Exception
+     */
     public function voirUtilisateurs()
     {
         if ($_SESSION['profilUtil'] != 'administrateur') {
@@ -101,6 +119,11 @@ class UtilisateurController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return void
+     * @throws \Exception
+     */
     public function modifierUtilisateur($id)
     {
         if ($_SESSION['profilUtil'] != 'administrateur') {
@@ -113,10 +136,12 @@ class UtilisateurController extends Controller
         $utilisateurManager = new UtilisateurManager();
         $profilManager = new ProfilManager();
         $regionManager = new RegionManager();
+        $echelonManager = new EchelonManager();
 
         $utilisateur = $utilisateurManager->getUtilisateurById($id);
         $profils = $profilManager->getProfils();
         $regions = $regionManager->getRegions();
+        $echelons = $echelonManager->getLesEchelons();
 
         if (count($_POST) > 0) {
             $nom = filter_input(INPUT_POST, 'nom', FILTER_DEFAULT);
@@ -126,16 +151,17 @@ class UtilisateurController extends Controller
             $date_depart = filter_input(INPUT_POST, 'date_depart', FILTER_DEFAULT);
             $id_region = filter_input(INPUT_POST, 'id_region', FILTER_DEFAULT);
             $id_profil = filter_input(INPUT_POST, 'id_profil', FILTER_DEFAULT);
+            $id_echelon = filter_input(INPUT_POST, 'id_echelon', FILTER_DEFAULT);
 
             if ($date_depart == '') {
                 $date_depart = null;
             }
 
-            $errorMessage = $this->verifierUtilisateur($nom, $prenom, $login, $date_embauche, $id_region, $id_profil);
+            $errorMessage = $this->verifierUtilisateur($nom, $prenom, $login, $date_embauche, $id_region, $id_profil, $id_echelon);
 
             if (empty($errorMessage) == true) {
                 $utilisateurManager = new UtilisateurManager();
-                $utilisateurManager->modifierUtilisateur($id, $nom, $prenom, $login, $date_embauche, $date_depart, $id_region, $id_profil);
+                $utilisateurManager->modifierUtilisateur($id, $nom, $prenom, $login, $date_embauche, $date_depart, $id_region, $id_profil, $id_echelon);
                 header('Location: voirUtilisateurs');
             }
         }
@@ -145,10 +171,15 @@ class UtilisateurController extends Controller
             'utilisateur' => $utilisateur,
             'profils' => $profils,
             'regions' => $regions,
+            'echelons' => $echelons,
             'errorMessage' => $errorMessage
         ]);
     }
 
+    /**
+     * @return void
+     * @throws \Exception
+     */
     public function ajouterUtilisateur()
     {
         if ($_SESSION['profilUtil'] != 'administrateur') {
@@ -166,6 +197,7 @@ class UtilisateurController extends Controller
             $date_depart = filter_input(INPUT_POST, 'date_depart', FILTER_DEFAULT);
             $id_region = filter_input(INPUT_POST, 'id_region', FILTER_DEFAULT);
             $id_profil = filter_input(INPUT_POST, 'id_profil', FILTER_DEFAULT);
+            $id_echelon = filter_input(INPUT_POST, 'id_niveauexpertise', FILTER_DEFAULT);
 
             if ($date_depart == '') {
                 $date_depart = null;
@@ -175,30 +207,42 @@ class UtilisateurController extends Controller
                 $date_embauche = null;
             }
 
-            $errorMessage .= $this->verifierUtilisateur($nom, $prenom, $login, $date_embauche, $id_region, $id_profil);
+            $errorMessage .= $this->verifierUtilisateur($nom, $prenom, $login, $date_embauche, $id_region, $id_profil, $id_echelon);
 
             if (empty($errorMessage) == true) {
                 $utilisateurManager = new UtilisateurManager();
-                $utilisateur = $utilisateurManager->ajouterUtilisateur($nom, $prenom, $login, $date_embauche, $date_depart, $id_region, $id_profil);
+                $utilisateur = $utilisateurManager->ajouterUtilisateur($nom, $prenom, $login, $date_embauche, $date_depart, $id_region, $id_profil, $id_echelon);
                 header('Location: voirUtilisateurs');
             }
         }
 
         $profilManager = new ProfilManager();
         $regionManager = new RegionManager();
+        $echelonManager = new EchelonManager();
 
         $profils = $profilManager->getProfils();
         $regions = $regionManager->getRegions();
+        $echelons = $echelonManager->getLesEchelons();
 
         $this->render('utilisateur/ajouterUtilisateur', [
             'title' => 'Ajouter un utilisateur',
             'profils' => $profils,
             'regions' => $regions,
+            'echelons' => $echelons,
             'errorMessage' => $errorMessage,
         ]);
     }
 
-    private function verifierUtilisateur(string $nom, string $prenom, string $login, ?string $date_embauche, ?int $id_region, ?int $id_profil): string
+    /**
+     * @param string $nom
+     * @param string $prenom
+     * @param string $login
+     * @param string|null $date_embauche
+     * @param int|null $id_region
+     * @param int|null $id_profil
+     * @return string
+     */
+    private function verifierUtilisateur(string $nom, string $prenom, string $login, ?string $date_embauche, ?int $id_region, ?int $id_profil, ?int $id_echelon): string
     {
         $errors = '';
         if (empty($nom) == true) {
@@ -216,6 +260,9 @@ class UtilisateurController extends Controller
         if ($id_profil == null) {
             $errors .= "Vous devez renseigner le profil<br>";
         }
+        if ($id_profil == null) {
+            $errors .= "Vous devez renseigner l'échelon<br>";
+        }
         if ($date_embauche == null) {
             $errors .= "Vous devez renseigner la date d'embauche<br>";
         }
@@ -223,6 +270,11 @@ class UtilisateurController extends Controller
         return $errors;
     }
 
+    /**
+     * @param $id
+     * @return void
+     * @throws \Exception
+     */
     public function supprimerUtilisateur($id): void
     {
         if ($_SESSION['profilUtil'] != 'administrateur') {

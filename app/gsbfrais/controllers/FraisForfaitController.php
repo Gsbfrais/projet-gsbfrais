@@ -53,10 +53,10 @@ class FraisForfaitController extends Controller
             'errorMessage' => $errorMessage,
             'codeCategorieSelectionnee' => $codeCategorieSelectionnee,
             'quantite' => $quantite,
-            'plafondKm' => $_SESSION['plafondKm']
-            'codeCategorie' => $codeCategorie,
+            'plafondKm' => $_SESSION['plafondKm'],
+            'codeCategorie' => $codeCategorieSelectionnee,
             'quantite' => $quantite,
-            'plafondFraisEtp' => $_SESSION['plafondetp'],
+            'plafondFraisEtp' => $_SESSION['plafondetp']
         ]);
     }
 

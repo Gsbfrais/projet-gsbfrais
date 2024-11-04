@@ -38,7 +38,7 @@
         <div class="mb-3">
             <label for="date_depart" class="form-label">Date de départ</label>
             <input type="date" class="form-control" id="date_depart" name="date_depart"
-                   value="<?= $utilisateur->date_depart ?>">
+                   value="<?= $utilisateur->date_depart ?? null ?>">
         </div>
 
         <div class="mb-3">
@@ -58,6 +58,17 @@
                 <?php foreach ($profils as $profil) : ?>
                     <option value="<?= $profil->id ?>" <?= $profil->id == $utilisateur->id_profil ? 'selected' : '' ?>>
                         <?= $profil->nom ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_niveauexpertise" class="form-label">Echelon</label>
+            <select class="form-select" id="id_niveauexpertise" name="id_niveauexpertise" required>
+                <?php foreach ($echelons as $echelon) : ?>
+                    <option value="<?= $echelon->id ?>" <?= $echelon->id == $utilisateur->id_niveauexpertise ?? 'selected' ?>>
+                        <?= $echelon->echelon ?> - <?= $echelon->plafond ?>
                     </option>
                 <?php endforeach; ?>
             </select>
