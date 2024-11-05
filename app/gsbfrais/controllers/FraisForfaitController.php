@@ -27,21 +27,22 @@ class FraisForfaitController extends Controller
         }
 
         $errorMessage = '';
-        $codeCategorie = '';
+        $codeCategorieSelectionnee = '';
         $quantite = '';
 
         if (count($_POST) > 0) {
-            $codeCategorie = filter_input(INPUT_POST, 'codeCategorie', FILTER_DEFAULT);
-            $codeCategorie = strip_tags($codeCategorie);
+            $codeCategorieSelectionnee = filter_input(INPUT_POST, 'codeCategorie', FILTER_DEFAULT);
+            $codeCategorieSelectionnee = strip_tags($codeCategorieSelectionnee);
             $quantite = filter_input(INPUT_POST, 'quantite', FILTER_VALIDATE_FLOAT);
+            
 
-            $errorMessage = $this->verifierQteFraisForfait($codeCategorie, $quantite);
+            $errorMessage = $this->verifierQteFraisForfait($codeCategorieSelectionnee, $quantite);
 
             // Mise à jour de la base de données si aucune erreur
             if (empty($errorMessage) == true) {
                 $fraisForfaitManager = new FraisForfaitManager();
-                $fraisForfaitManager->ajouteFraisForfait($_SESSION['idUtil'], $this->mois, $codeCategorie, $quantite);
-                $codeCategorie = '';
+                $fraisForfaitManager->ajouteFraisForfait($_SESSION['idUtil'], $this->mois, $codeCategorieSelectionnee, $quantite);
+                $codeCategorieSelectionnee = '';
                 $quantite = '';
             }
         }
@@ -55,8 +56,12 @@ class FraisForfaitController extends Controller
             'lesFraisForfait' => $lesFraisForfait,
             'lesCategories' => $lesCategories,
             'errorMessage' => $errorMessage,
-            'codeCategorie' => $codeCategorie,
-            'quantite' => $quantite
+            'codeCategorieSelectionnee' => $codeCategorieSelectionnee,
+            'quantite' => $quantite,
+            'plafondKm' => $_SESSION['plafondKm'],
+            'codeCategorie' => $codeCategorieSelectionnee,
+            'quantite' => $quantite,
+            'plafondFraisEtp' => $_SESSION['plafondetp']
         ]);
     }
 
@@ -76,7 +81,26 @@ class FraisForfaitController extends Controller
 
         if ($quantite === false) { // comparaison en type ET en valeur !
             $errors .= "La quantité doit être renseignée et numérique<br>";
+        }else {
+            if ($codeCategorie == 'ETP' && $quantite > $_SESSION['plafond_etp']) {
+                $errors .= "La quantité  ne doit pas dépasser {$_SESSION['plafond_etp']}<br>";
+            }
         }
+         
+        $mm = substr($this->mois, 4, 2);
+        $aa = substr($this->mois, 0, 4);
+        $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
+
+        if ($quantite > $nbJourMois && $codeCategorie == 'ETP') {
+            $errors .= "La quantité doit être inférieure au nombre de jours du mois<br>";
+        }
+        
+        if($codeCategorie == 'KM' &&  $_SESSION['plafondKm'] < $quantite  ){
+            $errors .= "Le plafond kilometrique n'est pas respecter<br>";
+        }
+
+        
+        
         return $errors;
     }
 

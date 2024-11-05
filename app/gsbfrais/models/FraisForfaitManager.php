@@ -36,6 +36,9 @@ class FraisForfaitManager extends Model
         }
         return $stmt->fetchAll();
     }
+   
+
+
 
     /**
      * Retourne tous les frais forfaitisés des visiteurs d'une région pour un mois donnés
@@ -98,7 +101,8 @@ class FraisForfaitManager extends Model
      * @param int $mois int sous la forme aaaamm période concernée
      * @param string $codeCategorie code catégori du frais forfaitisé
      * @param int $quantite quantite de frais forfaitisé
-     *
+     * @param int $idNiveauExpertise identifiant du niveau d'expertise
+     * 
      * @return void
      * @throws \Exception
      */
@@ -118,7 +122,7 @@ class FraisForfaitManager extends Model
             ':id_visiteur' => $idVisiteur,
             ':mois' => $mois,
             ':code_categorie' => $codeCategorie,
-            ':quantite' => $quantite
+            ':quantite' => $quantite,
         ));
         if ($ret == false) {
             http_response_code(500);
@@ -192,18 +196,19 @@ class FraisForfaitManager extends Model
      * @param int $mois int sous la forme aaaamm période concernée
      * @param int $codeTypeFrais code du type de frais
      * @param int $quantite nouvelle quantite
-     *
+     * @param int $idNiveauExpertise identifiant du niveau d'expertise
      * @return void
      */
-    public function modifieFraisForfait(int $idVisiteur, int $mois, string $codeTypeFrais, int $quantite): void
+    public function modifieFraisForfait(int $idVisiteur, int $mois, string $codeTypeFrais, int $quantite, int $idNiveauExpertise):void
     {
-        $sql = "update fraisforfait set fraisforfait.quantite = $quantite
+        $sql = "update fraisforfait set fraisforfait.quantite = $quantite, id_niveauexpertise = :id_niveauexpertise
         where fraisforfait.id_visiteur = :id_visiteur 
         and fraisforfait.mois = :mois
         and fraisforfait.code_categorie = '$codeTypeFrais'";
         $stmt = $this->db->prepare($sql);
         $ret = $stmt->execute(array(
             ':id_visiteur' => $idVisiteur,
+            ':id_niveauexpertise' => $idNiveauExpertise,
             ':mois' => $mois
         ));
         if ($ret == false) {

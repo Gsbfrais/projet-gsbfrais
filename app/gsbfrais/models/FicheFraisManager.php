@@ -99,7 +99,7 @@ class FicheFraisManager extends Model
     public function getFicheFrais(int $idVisiteur, int $mois): object
     {
         $sql = "select nom, prenom, fichefrais.code_statut, fichefrais.date_modif,  
-                    (select sum(fraisforfait.quantite * categoriefraisforfait.prix_unitaire) 
+                    (select ifnull(sum(fraisforfait.quantite * categoriefraisforfait.prix_unitaire), 0)
                         from fraisforfait
                         join categoriefraisforfait on fraisforfait.code_categorie = categoriefraisforfait.code 
                         where fraisforfait.id_visiteur = fichefrais.id_visiteur
@@ -123,6 +123,44 @@ class FicheFraisManager extends Model
             throw new \Exception('Problème requête getFicheFrais (FicheFraisManager)');
         }
         $rep = $stmt->fetch();
+        return $rep;
+    }
+
+    
+    /**
+     * Retourne les informations des fiches de frais non remboursées d'un visiteur des périodes précédentes
+     * 
+     * @param int $idVisiteur identifiant du visiteur médical
+     * @param int $moisEnCours mois en cours
+     * 
+     * @return array Les fiches de frais non remboursees du visiteur
+     */
+    public function getFichesFraisNonRemboursees(int $idVisiteur, $moisEnCours): array
+    {
+        $sql = "select mois, code_statut, nb_justificatifs, montant_valide, date_modif,
+                    (select ifnull(sum(fraisforfait.quantite * categoriefraisforfait.prix_unitaire), 0)
+                        from fraisforfait
+                        join categoriefraisforfait on fraisforfait.code_categorie = categoriefraisforfait.code 
+                        where fraisforfait.id_visiteur = fichefrais.id_visiteur
+                        and fraisforfait.mois = fichefrais.mois) as montantFraisForfait,
+                    (select ifnull(sum(fraishorsforfait.montant),0)
+                        from fraishorsforfait 
+                        where fraishorsforfait.id_visiteur = fichefrais.id_visiteur
+                        and fraishorsforfait.mois = fichefrais.mois) as montantFraisHorsForfait
+                from  fichefrais 
+                join statutfichefrais on fichefrais.code_statut = statutfichefrais.code 
+                join utilisateur on fichefrais.id_visiteur = utilisateur.id
+              where fichefrais.id_visiteur =:id_visiteur and fichefrais.mois < :mois and code_statut <> 'RB'";
+        $stmt = $this->db->prepare($sql);
+        $ret = $stmt->execute([
+            ':id_visiteur' => $idVisiteur,
+            ':mois' => $moisEnCours
+        ]);
+        if ($ret == false) {
+            http_response_code(500);
+            throw new \Exception('Problème requête getFicheFrais (FicheFraisManager)');
+        }
+        $rep = $stmt->fetchAll();
         return $rep;
     }
     
@@ -297,7 +335,7 @@ class FicheFraisManager extends Model
      */
     public function getLesFichesFraisAValider(int $mois):array
     {
-        $sql = "select nom, prenom, id_visiteur, mois, nb_justificatifs, date_format(date_modif, '%m/%d/%Y') as date_modif,
+        $sql = "SELECT nom, prenom, id_visiteur, mois, nb_justificatifs, date_format(date_modif, '%m/%d/%Y') as date_modif,
                 (
                     select sum(quantite * prix_unitaire)
                     from fraisforfait
@@ -327,6 +365,46 @@ class FicheFraisManager extends Model
         }
         return $stmt->fetchAll();
     }
+    public function getLesFichesFraisARembourser(int $mois): array
+{
+    // Requête SQL pour récupérer les fiches à rembourser (statut 'VA' par exemple)
+    $sql = "SELECT nom, prenom, id_visiteur, mois, nb_justificatifs, 
+                   date_format(date_modif, '%m/%d/%Y') AS date_modif,
+                   (
+                       SELECT SUM(quantite * prix_unitaire)
+                       FROM fraisforfait
+                       JOIN categoriefraisforfait ON fraisforfait.code_categorie = categoriefraisforfait.code
+                       WHERE fraisforfait.id_visiteur = fichefrais.id_visiteur
+                       AND fraisforfait.mois = fichefrais.mois
+                   ) AS montant_forfait,
+                   (
+                       SELECT SUM(montant)
+                       FROM fraishorsforfait
+                       WHERE fraishorsforfait.id_visiteur = fichefrais.id_visiteur
+                       AND fraishorsforfait.mois = fichefrais.mois
+                   ) AS montant_horsforfait
+            FROM fichefrais
+            JOIN utilisateur ON utilisateur.id = fichefrais.id_visiteur
+            WHERE code_statut = 'VA'  -- Statut 'VA' pour validé, en attente de remboursement
+            AND mois = :mois
+            ORDER BY fichefrais.id_visiteur DESC";
+
+    // Préparation et exécution de la requête
+    $stmt = $this->db->prepare($sql);
+    $ret = $stmt->execute([
+        ':mois' => $mois
+    ]);
+
+    // Vérification de l'exécution de la requête
+    if ($ret == false) {
+        http_response_code(500);
+        throw new \Exception('Problème requête getLesFichesFraisARembourser');
+    }
+
+    // Retour des résultats sous forme de tableau
+    return $stmt->fetchAll();
+}
+
 
     /**
      * Retourne les mois (aaaamm) pour lesquels les visiteurs d'une région donnée ont une fiche de frais

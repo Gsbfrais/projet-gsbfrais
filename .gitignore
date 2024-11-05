@@ -3,3 +3,4 @@ mariadbdata/*
 .vscode/
 *.log
 .idea
+*.pem

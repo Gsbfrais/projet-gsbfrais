@@ -45,6 +45,8 @@ function estDateDepassee(string $laDate): bool
     @list($aa, $mm, $jj) = explode('-', $laDate);
     $dateFournie = $aa . $mm . $jj;
 
+    
+
     if ($dateFournie < $dateMoinsUnAn) {
         return true;
     } else {
