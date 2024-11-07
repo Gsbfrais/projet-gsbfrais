@@ -34,7 +34,7 @@ class FraisForfaitController extends Controller
             $codeCategorieSelectionnee = filter_input(INPUT_POST, 'codeCategorie', FILTER_DEFAULT);
             $codeCategorieSelectionnee = strip_tags($codeCategorieSelectionnee);
             $quantite = filter_input(INPUT_POST, 'quantite', FILTER_VALIDATE_FLOAT);
-            
+
 
             $errorMessage = $this->verifierQteFraisForfait($codeCategorieSelectionnee, $quantite);
 
@@ -67,41 +67,34 @@ class FraisForfaitController extends Controller
 
     private function verifierQteFraisForfait($codeCategorie, $quantite): string
     {
-        $errors = '';
-
-        $nbJour = cal_days_in_month(CAL_GREGORIAN, intval(date('n')), intval(date('o')));
-
-        if ($quantite > $nbJour) {
-            $errors .= "Vous ne pouvez pas rentrer une quantité supérieure au nombre de jour<br>";
-        }
-
-        if (empty($codeCategorie) == true) {
-            $errors .= "Vous devez renseigner le code catégorie<br>";
-        }
-
-        if ($quantite === false) { // comparaison en type ET en valeur !
-            $errors .= "La quantité doit être renseignée et numérique<br>";
-        }else {
-            if ($codeCategorie == 'ETP' && $quantite > $_SESSION['plafond_etp']) {
-                $errors .= "La quantité  ne doit pas dépasser {$_SESSION['plafond_etp']}<br>";
+        {
+            $errors = '';
+            if (empty($codeCategorie) == true) {
+                $errors .= "Vous devez renseigner le code catégorie<br>";
             }
-        }
-         
-        $mm = substr($this->mois, 4, 2);
-        $aa = substr($this->mois, 0, 4);
-        $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
 
-        if ($quantite > $nbJourMois && $codeCategorie == 'ETP') {
-            $errors .= "La quantité doit être inférieure au nombre de jours du mois<br>";
-        }
-        
-        if($codeCategorie == 'KM' &&  $_SESSION['plafondKm'] < $quantite  ){
-            $errors .= "Le plafond kilometrique n'est pas respecter<br>";
-        }
+            if ($quantite === false) {
+                $errors .= "La quantité doit être renseignée et numérique<br>";
+            } else {
+                if ($codeCategorie == 'ETP' && $quantite > $_SESSION['plafondetp']) {
+                    $errors .= "La quantité  ne doit pas dépasser {$_SESSION['plafondetp']}<br>";
+                }
+            }
 
-        
-        
-        return $errors;
+            $mm = substr($this->mois, 4, 2);
+            $aa = substr($this->mois, 0, 4);
+            $nbJourMois = cal_days_in_month(CAL_GREGORIAN, $mm, $aa);
+
+            if ($quantite > $nbJourMois && $codeCategorie == 'ETP') {
+                $errors .= "La quantité doit être inférieure au nombre de jours du mois<br>";
+            }
+
+            if ($codeCategorie == 'KM' && $_SESSION['plafondKm'] < $quantite) {
+                $errors .= "Le plafond kilometrique n'est pas respecter<br>";
+            }
+
+            return $errors;
+        }
     }
 
     public function supprimerFraisForfait($codeCategorie): void
@@ -121,16 +114,8 @@ class FraisForfaitController extends Controller
         $fraisForfaitManager->supprimeFraisForfait($_SESSION['idUtil'], $this->mois, $codeCategorie);
         $lesCategories = $fraisForfaitManager->getLesCategoriesDisponiblesPourFicheFrais($_SESSION['idUtil'], $this->mois);
 
-        // Récupère la liste des frais forfaitisés mise à jour pour affichage 
         $lesFraisForfait = $fraisForfaitManager->getLesFraisForfait($_SESSION['idUtil'], $this->mois);
 
-        $this->render('fraisForfait/gestionFraisForfait', [
-            'title' => 'Saisie frais forfaitisés',
-            'periode' => date("m/Y"),
-            'lesFraisForfait' => $lesFraisForfait,
-            'lesCategories' => $lesCategories,
-            'codeCategorie' => '',
-            'quantite' => ''
-        ]);
+        header('Location: saisirFraisForfait');
     }
 }

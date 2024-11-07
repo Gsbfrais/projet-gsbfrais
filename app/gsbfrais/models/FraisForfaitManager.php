@@ -2,8 +2,6 @@
 
 namespace Gsbfrais\models;
 
-use Gsbfrais\Autoloader;
-
 class FraisForfaitManager extends Model
 {
     public function __construct()
@@ -108,13 +106,6 @@ class FraisForfaitManager extends Model
      */
     public function ajouteFraisForfait(int $idVisiteur, int $mois, string $codeCategorie, int $quantite)
     {
-        $nbJour = cal_days_in_month(CAL_GREGORIAN, intval(date('n')), intval(date('o')));
-
-        if ($quantite > $nbJour) {
-            http_response_code(500);
-            throw new \Exception('Le nombre de fiche de frais ne peut pas dépasser le nombre de jour du mois');
-        }
-
         $sql = "insert into fraisforfait(id_visiteur, mois, code_categorie, quantite)
         values(:id_visiteur, :mois, :code_categorie, :quantite)";
         $stmt = $this->db->prepare($sql);

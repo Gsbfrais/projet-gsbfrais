@@ -21,7 +21,7 @@ class UtilisateurManager extends Model
         $utilisateur = false;
 
         $sql = "select utilisateur.id, utilisateur.nom, utilisateur.prenom, utilisateur.login, utilisateur.mot_passe, 
-                profil.nom as nom_profil, utilisateur.id_region, utilisateur.date_embauche, niveauexpertise.plafondetp, region.plafondKm 
+                profil.nom as nom_profil, utilisateur.id_region, utilisateur.date_embauche, niveauexpertise.plafondetp, region.plafondKm, utilisateur.id_niveauexpertise
                 from utilisateur 
                 join profil on profil.id = id_profil 
                 left join niveauexpertise on niveauexpertise.id = utilisateur.id_niveauexpertise
@@ -92,7 +92,7 @@ class UtilisateurManager extends Model
      * @return void
      * @throws \Exception
      */
-    public function modifierUtilisateur(int $idUtilisateur, string $nom, string $prenom, string $login, string $date_embauche, string $date_depart, int $id_region, int $id_profil, int $id_niveauexpertise): void
+    public function modifierUtilisateur(int $idUtilisateur, string $nom, string $prenom, string $login, string $date_embauche, ?string $date_depart, int $id_region, int $id_profil): void
     {
         $sql = "UPDATE utilisateur SET nom = :nom, prenom = :prenom, login = :login, date_embauche = :date_embauche, date_depart = :date_depart, id_region = :id_region, id_profil = :id_profil, id_niveauexpertise = :id_niveauexpertise WHERE id = :id_utilisateur";
         $stmt = $this->db->prepare($sql);
@@ -105,7 +105,7 @@ class UtilisateurManager extends Model
             ':id_region' => $id_region,
             ':id_profil' => $id_profil,
             ':id_utilisateur' => $idUtilisateur,
-            ':id_niveau_expertise' => $id_niveauexpertise,
+            ':id_niveauexpertise' => null,
         ));
         if ($ret == false) {
             $errorInfo = $stmt->errorInfo();
@@ -125,7 +125,7 @@ class UtilisateurManager extends Model
      * @return void
      * @throws \Exception
      */
-    public function ajouterUtilisateur(string $nom, string $prenom, string $login, string $date_embauche, ?string $date_depart, int $id_region, int $id_profil, int $id_niveauexpertise): void
+    public function ajouterUtilisateur(string $nom, string $prenom, string $login, string $date_embauche, ?string $date_depart, int $id_region, int $id_profil): void
     {
         $DEFAULT_PASSWORD = '$argon2i$v=19$m=65536,t=4,p=1$ZU5aMzdBL1pKdFhHbmF3UQ$dFT0y9yrt0tFJx0A5JbJbJlRa8ESSw06L4Cq3vGGEWI';
         $sql = "INSERT INTO utilisateur VALUES (null, :nom, :prenom, :login, :password, :date_embauche, :date_depart, :id_region, :id_profil, :id_niveauexpertise)";
@@ -139,7 +139,7 @@ class UtilisateurManager extends Model
             ':date_depart' => $date_depart,
             ':id_region' => $id_region,
             ':id_profil' => $id_profil,
-            ':id_niveauexpertise' => $id_niveauexpertise,
+            ':id_niveauexpertise' => null,
         ));
         if ($ret == false) {
             $errorInfo = $stmt->errorInfo();
